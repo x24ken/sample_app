@@ -15,7 +15,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert flash.empty?
   end
   
-  test "正しいログイン 後　ログアウト" do
+  test "正しいログインしてログアウトする　2番目のウィンドウでログアウト" do
     get login_path
     assert_template 'sessions/new'
     post login_path, params: { session: { email: @user.email,
@@ -35,5 +35,26 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", login_path
     assert_select "a[href=?]", logout_path, count: 0
     assert_select "a[href=?]", user_path(@user), count: 0
+    
+    #２番目のウィンドウでログアウトをクリックするシュミレートする
+    delete logout_path
+    follow_redirect!
+    assert_select "a[href=?]", login_path
+    assert_select "a[href=?]", logout_path, count: 0
+    assert_select "a[href=?]", user_path(@user), count: 0
+  end
+  
+  test "remember_meをつけてログイン" do
+    log_in_as(@user, remember_me: '1')
+    assert_equal assigns(:user).remember_token, cookies['remember_token']
+  end
+  
+  test "remember_meをつけないでログイン" do
+    #クッキーを保存してログイン
+    log_in_as(@user, remember_me: '1')
+    delete logout_path
+    #クッキーを削除してログイン
+    log_in_as(@user, remember_me: '0')
+    assert_empty cookies['remember_token']
   end
 end

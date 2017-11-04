@@ -20,6 +20,16 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
   
+  test "admin管理を他のユーザから変えられてはならない" do
+    log_in_as(@other_user)
+    assert_not @other_user.admin?
+    patch user_path(@other_user), params: {
+                                  user:   { password: 'password',
+                                            password_confirmation: 'password',
+                                            admin: true } }
+    assert_not @other_user.reload.admin?              
+  end
+  
   test "他ユーザの:editアクション" do
     log_in_as(@other_user)
     get edit_user_path(@user)
@@ -38,5 +48,30 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "非ログイン状態での:indexアクション" do
     get users_path
     assert_redirected_to login_url
+  end
+  
+  test "管理者以外がadmin trueデータを送ってもダメ" do
+    log_in_as(@other_user)
+    assert_not @other_user.admin?
+    patch user_path(@other_user), params: {
+                                    user: { password:              @other_user.password,
+                                            password_confirmation: @other_user.password,
+                                            admin: true } }
+    assert_not @other_user.reload.admin?
+  end
+  
+  test "非ログイン状態での:deleteアクション" do
+    assert_no_difference 'User.count' do
+      delete user_path(@user)
+    end
+    assert_redirected_to login_url
+  end
+
+  test "管理者以外の:deleteアクション" do
+    log_in_as(@other_user)
+    assert_no_difference 'User.count' do
+      delete user_path(@user)
+    end
+    assert_redirected_to root_url
   end
 end

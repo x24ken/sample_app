@@ -18,10 +18,10 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     assert_select "div.alert", "The form contains 4 errors."
   end
   
-  test "更新成功" do
-    log_in_as(@user)
+  test "更新成功 フレンドリーフォワーティング" do
     get edit_user_path(@user)
-    assert_template 'users/edit'
+    log_in_as(@user)
+    assert_redirected_to edit_user_path(@user)
     name  = "Foo Bar"
     email = "foo@bar.com"
     patch user_path(@user), params: { user: { name: name,

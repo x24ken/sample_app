@@ -47,6 +47,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   test "remember_meをつけてログイン" do
     log_in_as(@user, remember_me: '1')
     assert_equal assigns(:user).remember_token, cookies['remember_token']
+    #assignsは直前のインスタンス変数を入れる
   end
   
   test "remember_meをつけないでログイン" do

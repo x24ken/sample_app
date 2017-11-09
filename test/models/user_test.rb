@@ -76,5 +76,13 @@ class UserTest < ActiveSupport::TestCase
   test "auhenticated?メソッドはnilの時はエラーを返すべき" do
     assert_not @user.authenticated?(:remember, '')
   end
+  
+  test "ユーザー削除されたときはマイクロポストも一緒に消える" do
+    @user.save
+    @user.microposts.create!(content: "Lorem ipsum")
+    assert_difference 'Micropost.count', -1 do
+      @user.destroy
+    end
+  end
 end
 

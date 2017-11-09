@@ -4,8 +4,7 @@ class MicropostTest < ActiveSupport::TestCase
   
   def setup
     @user = users(:michael)
-    #このコードは慣習的に正しくない
-    @micropost = Micropost.new(content: "Lorem ipsum", user_id: @user.id)
+    @micropost = @user.microposts.build(content: "Lorem ipsum")
   end
   
   test "正常なモデルの有効性(valid)" do
@@ -25,5 +24,9 @@ class MicropostTest < ActiveSupport::TestCase
   test "contentは140文字まで" do
     @micropost.content = "a" * 141
     assert_not @micropost.valid?
+  end
+  
+  test "最も新しいマイクロポストを最初に表示する" do
+    assert_equal microposts(:most_recent), Micropost.first
   end
 end

@@ -7,7 +7,7 @@ class SessionsHelperTest < ActionView::TestCase
     remember(@user)
   end
   
-  test "一時セッションがnilでもログインしたままになっているか" do
+  test "一時セッションがnilでもログインしたままになっている" do
     assert_equal @user, current_user
     assert is_logged_in?
   end

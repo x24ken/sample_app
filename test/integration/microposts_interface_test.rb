@@ -6,7 +6,7 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     @user = users(:michael)
   end
   
-  test "micropost interface" do
+  test "micropostインターフェース" do
     log_in_as(@user)
     get root_path
     assert_select 'div.pagination'

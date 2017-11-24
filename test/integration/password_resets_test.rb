@@ -7,7 +7,7 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
     @user = users(:michael)
   end
   
-  test "password reset" do
+  test "passwordリセット" do
     get new_password_reset_path
     assert_template 'password_resets/new'
     #メールアドレスが無効
@@ -61,7 +61,7 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
     assert_redirected_to user
   end
   
-  test "expired token" do
+  test "パスワードリセット成功" do
     get new_password_reset_path
     post password_resets_path,
       params: { password_reset: { email: @user.email } }
